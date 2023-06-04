@@ -65,14 +65,26 @@ agent_context = st.text_area("Agent context prompt. ie. 'You are skilled in tran
 query = st.text_area("Insert your query")
 
 if st.button("Submit Query", type="primary"):
-    # Create an agent from the CSV file.
-    agent = create_agent(data)
+    # Check if a file is uploaded
+    if data is not None:
+        # Create a temporary file to save the uploaded CSV
+        with open("temp.csv", "wb") as f:
+            f.write(data.getvalue())
 
-    # Query the agent.
-    response = query_agent(agent=agent, query=query,describe_dataset=describe_dataset,objectives=objectives,agent_context=agent_context)
+        # Create an agent from the CSV file.
+        agent = create_agent("temp.csv")
 
-    # Decode the response.
-    decoded_response = decode_response(response)
+        # Query the agent.
+        response = query_agent(agent=agent, query=query, describe_dataset=describe_dataset, objectives=objectives, agent_context=agent_context)
 
-    # Write the response to the Streamlit app.
-    write_response(decoded_response)
+        # Decode the response.
+        decoded_response = decode_response(response)
+
+        # Write the response to the Streamlit app.
+        write_response(decoded_response)
+
+        # Remove the temporary file
+        os.remove("temp.csv")
+    else:
+        st.write("Please upload a CSV file.")
+
