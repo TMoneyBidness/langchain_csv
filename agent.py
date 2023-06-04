@@ -3,6 +3,7 @@ from langchain.agents import create_pandas_dataframe_agent
 import pandas as pd
 import environ
 import csv
+import os
 
 env = environ.Env()
 environ.Env.read_env()
@@ -23,10 +24,16 @@ def create_agent(filename: str):
     # Create an OpenAI object.
     llm = OpenAI(openai_api_key=API_KEY)
 
+    # Save the uploaded file to a temporary location
+    with open("temp.csv", "wb") as f:
+        f.write(file.read())
+        
     # Read the CSV file into a Pandas DataFrame.
-    df = pd.read_csv(filename, encoding='utf-8', error_bad_lines=False, quoting=csv.QUOTE_NONE)
+    df = pd.read_csv("temp.csv", encoding='utf-8', error_bad_lines=False, quoting=csv.QUOTE_NONE)
 
-
+    # Remove the temporary file
+    os.remove("temp.csv")
+    
     # Create a Pandas DataFrame agent.
     return create_pandas_dataframe_agent(llm, df, verbose=False)
 
