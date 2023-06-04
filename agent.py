@@ -11,7 +11,7 @@ import os
 
 st.write("API_KEY:", st.secrets["apikey"]
 
-def create_agent(filename: str):
+def create_agent(filename):
     """
     Create an agent that can access and use a large language model (LLM).
 
