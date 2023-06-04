@@ -59,6 +59,9 @@ st.write("Please upload your CSV file below.")
 
 data = st.file_uploader("Upload a CSV")
 
+describe_dataset = st.text_area("Please describe your dataset. What is it?")
+objectives = st.text_area("Describe your objectives. For example, 'Provide ratios, outlying insights, and any actionable insights.'")
+agent_context = st.text_area("Agent context prompt. ie. 'You are skilled in transportation pattern analysis. You look for trends, ratios, and hidden insights in the data.'")
 query = st.text_area("Insert your query")
 
 if st.button("Submit Query", type="primary"):
@@ -66,7 +69,7 @@ if st.button("Submit Query", type="primary"):
     agent = create_agent(data)
 
     # Query the agent.
-    response = query_agent(agent=agent, query=query)
+    response = query_agent(agent=agent, query=query,describe_dataset=describe_dataset,objectives=objectives,agent_context=agent_context)
 
     # Decode the response.
     decoded_response = decode_response(response)
