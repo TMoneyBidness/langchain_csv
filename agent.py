@@ -10,12 +10,13 @@ environ.Env.read_env()
 
 API_KEY = env("apikey")
 
-def create_agent(filename: str):
+def create_agent(filename: str, file_content: bytes):
     """
     Create an agent that can access and use a large language model (LLM).
 
     Args:
-        filename: The path to the CSV file that contains the data.
+        filename: The name of the CSV file that contains the data.
+        file_content: The content of the CSV file as bytes.
 
     Returns:
         An agent that can access and use the LLM.
@@ -24,16 +25,17 @@ def create_agent(filename: str):
     # Create an OpenAI object.
     llm = OpenAI(openai_api_key=API_KEY)
 
-    # Save the uploaded file to a temporary location
-    with open("temp.csv", "wb") as f:
-        f.write(file.read())
-        
+    # Save the file content to a temporary location
+    temp_file_path = "temp.csv"
+    with open(temp_file_path, "wb") as f:
+        f.write(file_content)
+
     # Read the CSV file into a Pandas DataFrame.
-    df = pd.read_csv("temp.csv", encoding='utf-8', error_bad_lines=False, quoting=csv.QUOTE_NONE)
+    df = pd.read_csv(temp_file_path, encoding='utf-8', error_bad_lines=False, quoting=csv.QUOTE_NONE)
 
     # Remove the temporary file
-    os.remove("temp.csv")
-    
+    os.remove(temp_file_path)
+
     # Create a Pandas DataFrame agent.
     return create_pandas_dataframe_agent(llm, df, verbose=False)
 
