@@ -38,7 +38,9 @@ def query_agent(agent, query):
 
     Args:
         agent: The agent to query.
-        query: The query to ask the agent.
+        agent_context: This is the description of the strengths and purpose of the agent. Remember, you are a professional data sciencist and data analysis agent
+        describe_dataset: This is the description of the the data set. 
+        query: This is the question we are looking to have answered about the data.
 
     Returns:
         The response from the agent as a string.
