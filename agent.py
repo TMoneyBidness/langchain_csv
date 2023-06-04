@@ -46,61 +46,111 @@ def query_agent(agent, agent_context, describe_dataset, objectives, query):
 
     Args:
         agent: The agent to query.
-        agent_context: This is the description of the strengths and purpose of the agent. Remember, you are a professional data sciencist and data analysis agent
-        describe_dataset: This is the description of the the data set. 
-        query: This is the question we are looking to have answered about the data.
+        agent_context: This is the description of the strengths and purpose of the agent. Remember, you are a professional data scientist and data analysis agent.
+        describe_dataset: This is the description of the dataset.
+        objectives: The objectives of the analysis.
+        query: The question/query to ask the agent about the data.
 
     Returns:
         The response from the agent as a string.
     """
 
-    prompt = (
-        """
-            You are DataFrameAI, the most advanced dataframe analysis agent on the planet.  You are collaborating with a company to provide skilled, indepth data analysis on a large table. They are looking to gain competative business insights from this data, in order to gain an edge over their competitors. They are looking to analyze trends, ratios, hidden insights, and more.
-            
-            Here is the context about the agent:
-            
-            {agent_context}: This is the description of the strengths and purpose of the agent. Remember, you are a professional data sciencist and data analysis agent
-            {describe_dataset}: This is the description of the the data set. 
-            -----
-            
-            For the following query, if it requires drawing a table, reply as follows:
-            {"table": {"columns": ["column1", "column2", ...], "data": [[value1, value2, ...], [value1, value2, ...], ...]}}
+    prompt = f"""
+        You are DataFrameAI, the most advanced dataframe analysis agent on the planet. You are collaborating with a company to provide skilled, in-depth data analysis on a large table. They are looking to gain competitive business insights from this data in order to gain an edge over their competitors. They are looking to analyze trends, ratios, hidden insights, and more.
 
-            If the query requires creating a bar chart, reply as follows:
-            {"bar": {"columns": ["A", "B", "C", ...], "data": [25, 24, 10, ...]}}
-            
-            If the query requires creating a line chart, reply as follows:
-            {"line": {"columns": ["A", "B", "C", ...], "data": [25, 24, 10, ...]}}
-            
-            There can only be two types of chart, "bar" and "line".
-            
-            If it is just asking a question that requires neither, reply as follows:
-            {"answer": "answer"}
-            Example:
-            {"answer": "The title with the highest rating is 'Gilead'"}
-            
-            If you do not know the answer, reply as follows:
-            {"answer": "I do not know."}
-            
-            Return all output as a string.
-            
-            All strings in "columns" list and data list, should be in double quotes,
-            
-            For example: {"columns": ["title", "ratings_count"], "data": [["Gilead", 361], ["Spider's Web", 5164]]}
-            
-            Lets think step by step.
-                        
-            OUTPUT: Provide detailed, actionable insights. I am not looking for one or two sentences. I want a paragraph at least, inclding statistics, totals, etc. Be very specific, and analyze multiple colummns or rows against each other. Whatever is required to provide the most advanced information possible! 
+        Here is the context about the agent:
 
-            Below is the query.
-            Query: 
-            """
-        + query
-    )
+        {agent_context}: This is the description of the strengths and purpose of the agent. Remember, you are a professional data scientist and data analysis agent.
+        {describe_dataset}: This is the description of the dataset.
+        {objectives}: These are the objectives of the analysis.
+        -----
+
+        For the following query, if it requires drawing a table, reply as follows:
+        {{"table": {{"columns": ["column1", "column2", ...], "data": [[value1, value2, ...], [value1, value2, ...], ...]}}}}
+
+        If the query requires creating a bar chart, reply as follows:
+        {{"bar": {{"columns": ["A", "B", "C", ...], "data": [25, 24, 10, ...]}}}}
+
+        If the query requires creating a line chart, reply as follows:
+        {{"line": {{"columns": ["A", "B", "C", ...], "data": [25, 24, 10, ...]}}}}
+
+        There can only be two types of charts, "bar" and "line".
+
+        If it is just asking a question that requires neither, reply as follows:
+        {{"answer": "answer"}}
+        Example:
+        {{"answer": "The title with the highest rating is 'Gilead'"}}
+
+        If you do not know the answer, reply as follows:
+        {{"answer": "I do not know."}}
+
+        Return all output as a string.
+
+        All strings in "columns" list and data list should be in double quotes,
+
+        For example: {{"columns": ["title", "ratings_count"], "data": [["Gilead", 361], ["Spider's Web", 5164]]}}
+
+        Let's think step by step.
+
+        OUTPUT: Provide detailed, actionable insights. I am not looking for one or two sentences. I want a paragraph at least, including statistics, totals, etc. Be very specific and analyze multiple columns or rows against each other. Whatever is required to provide the most advanced information possible!
+
+        Below is the query.
+
+        Query: {query}
+    """
 
     # Run the prompt through the agent.
     response = agent.run(prompt)
 
     # Convert the response to a string.
-    return response.__str__()
+    return str(response)
+
+
+# Streamlit app code
+import streamlit as st
+import json
+
+from agent import query_agent
+
+def decode_response(response: str) -> dict:
+    """This function converts the string response from the model to a dictionary object.
+
+    Args:
+        response (str): response from the model
+
+    Returns:
+        dict: dictionary with response data
+    """
+    return json.loads(response)
+
+st.title("👨‍💻 Chat with your CSV")
+
+st.write("Please upload your CSV file below.")
+
+uploaded_file = st.file_uploader("Upload a CSV")
+
+describe_dataset = st.text_area("Please describe your dataset. What is it?")
+objectives = st.text_area("Describe your objectives. For example, 'Provide ratios, outlying insights, and any actionable insights.'")
+agent_context = st.text_area("Agent context prompt. e.g., 'You are skilled in transportation pattern analysis. You look for trends, ratios, and hidden insights in the data.'")
+query = st.text_area("Insert your query")
+
+if st.button("Submit Query", type="primary"):
+    # Check if a file is uploaded
+    if uploaded_file is not None:
+        # Get the filename and content of the uploaded file
+        filename = uploaded_file.name
+        file_content = uploaded_file.read()
+
+        # Create an agent from the uploaded CSV file
+        agent = create_agent(filename, file_content)
+
+        # Query the agent
+        response = query_agent(agent, agent_context, describe_dataset, objectives, query)
+
+        # Decode the response
+        decoded_response = decode_response(response)
+
+        # Display the response
+        st.write(decoded_response)
+    else:
+        st.write("Please upload a CSV file.")
