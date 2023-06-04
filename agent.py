@@ -1,14 +1,9 @@
 from langchain import OpenAI
 from langchain.agents import create_pandas_dataframe_agent
 import pandas as pd
+import streamlit.secrets as secrets
 
-# Setting up the api key
-import environ
-
-env = environ.Env()
-environ.Env.read_env()
-
-API_KEY = env("apikey")
+API_KEY = secrets["apikey"]
 
 
 def create_agent(filename: str):
