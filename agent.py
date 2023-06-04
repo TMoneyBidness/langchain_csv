@@ -11,13 +11,12 @@ import os
 
 st.write("API_KEY:", st.secrets["apikey"]
 
-def create_agent(filename: str, file_content: bytes):
+def create_agent(filename: str):
     """
     Create an agent that can access and use a large language model (LLM).
 
     Args:
-        filename: The name of the CSV file that contains the data.
-        file_content: The content of the CSV file as bytes.
+        filename: The path to the CSV file that contains the data.
 
     Returns:
         An agent that can access and use the LLM.
@@ -26,16 +25,8 @@ def create_agent(filename: str, file_content: bytes):
     # Create an OpenAI object.
     llm = OpenAI(openai_api_key=API_KEY)
 
-    # Save the file content to a temporary location
-    temp_file_path = "temp.csv"
-    with open(temp_file_path, "wb") as f:
-        f.write(file_content)
-
     # Read the CSV file into a Pandas DataFrame.
-    df = pd.read_csv(temp_file_path, encoding='utf-8', error_bad_lines=False, quoting=csv.QUOTE_NONE)
-
-    # Remove the temporary file
-    os.remove(temp_file_path)
+    df = pd.read_csv(filename)
 
     # Create a Pandas DataFrame agent.
     return create_pandas_dataframe_agent(llm, df, verbose=False)
@@ -107,51 +98,4 @@ def query_agent(agent, agent_context, describe_dataset, objectives, query):
     return str(response)
 
 
-# Streamlit app code
-import streamlit as st
-import json
 
-from agent import query_agent
-
-def decode_response(response: str) -> dict:
-    """This function converts the string response from the model to a dictionary object.
-
-    Args:
-        response (str): response from the model
-
-    Returns:
-        dict: dictionary with response data
-    """
-    return json.loads(response)
-
-st.title("👨‍💻 Chat with your CSV")
-
-st.write("Please upload your CSV file below.")
-
-uploaded_file = st.file_uploader("Upload a CSV")
-
-describe_dataset = st.text_area("Please describe your dataset. What is it?")
-objectives = st.text_area("Describe your objectives. For example, 'Provide ratios, outlying insights, and any actionable insights.'")
-agent_context = st.text_area("Agent context prompt. e.g., 'You are skilled in transportation pattern analysis. You look for trends, ratios, and hidden insights in the data.'")
-query = st.text_area("Insert your query")
-
-if st.button("Submit Query", type="primary"):
-    # Check if a file is uploaded
-    if uploaded_file is not None:
-        # Get the filename and content of the uploaded file
-        filename = uploaded_file.name
-        file_content = uploaded_file.read()
-
-        # Create an agent from the uploaded CSV file
-        agent = create_agent(filename, file_content)
-
-        # Query the agent
-        response = query_agent(agent, agent_context, describe_dataset, objectives, query)
-
-        # Decode the response
-        decoded_response = decode_response(response)
-
-        # Display the response
-        st.write(decoded_response)
-    else:
-        st.write("Please upload a CSV file.")
