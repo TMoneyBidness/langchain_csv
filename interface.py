@@ -43,8 +43,7 @@ def write_response(response_dict: dict):
     # Check if the response is a bar chart.
     if "bar" in response_dict:
         data = response_dict["bar"]
-        df = pd.DataFrame(data)
-        df.set_index("columns", inplace=True)
+        df = pd.DataFrame(data["data"], columns=data["columns"])
         st.bar_chart(df)
 
     # Check if the response is a line chart.
