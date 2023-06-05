@@ -11,6 +11,9 @@ import streamlit as st
 # API_KEY = env("apikey")
 
 API_KEY = st.secrets["apikey"]
+API_KEY = st.secrets["openai"]["apikey"]
+API_KEY = st.secrets["secrets"]["apikey"]
+API_KEY = st.secrets["API_KEY"]
 
 def create_agent(filename):
     """
