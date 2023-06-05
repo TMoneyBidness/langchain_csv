@@ -14,7 +14,12 @@ def decode_response(response: str) -> dict:
     Returns:
         dict: dictionary with response data
     """
-    return json.loads(response)
+    try:
+        return json.loads(response)
+    except json.JSONDecodeError:
+        print(f"Failed to decode JSON from response: {response}")
+        raise
+
 
 
 def write_response(response_dict: dict):
