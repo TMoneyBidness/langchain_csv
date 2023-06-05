@@ -1,9 +1,6 @@
 from langchain import OpenAI
 from langchain.agents import create_pandas_dataframe_agent
 import pandas as pd
-import environ
-import csv
-import os
 import streamlit as st
 
 API_KEY = st.secrets["apikey"]
