@@ -6,10 +6,6 @@ import csv
 import os
 import streamlit as st
 
-env = environ.Env()
-environ.Env.read_env()
-API_KEY = env("apikey")
-
 API_KEY = st.secrets["apikey"]
 
 def create_agent(filename):
