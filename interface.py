@@ -68,13 +68,13 @@ if st.button("Submit Query", type="primary"):
     # Create an agent from the CSV file.
     agent = create_agent(data)
 
-     # Query the agent.
-     response = query_agent(agent=agent, query=query, describe_dataset=describe_dataset, objectives=objectives, agent_context=agent_context)
+    # Query the agent.
+    response = query_agent(agent=agent, query=query, describe_dataset=describe_dataset, objectives=objectives, agent_context=agent_context)
 
-     # Decode the response.
-     decoded_response = decode_response(response)
+    # Decode the response.
+    decoded_response = decode_response(response)
 
-      # Write the response to the Streamlit app.
-      write_response(decoded_response)
+     # Write the response to the Streamlit app.
+     write_response(decoded_response)
 
 
