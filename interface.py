@@ -1,4 +1,6 @@
 import streamlit as st
+from langchain.chat_models import ChatOpenAI
+
 import pandas as pd
 import json
 
