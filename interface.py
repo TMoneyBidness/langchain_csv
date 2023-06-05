@@ -50,9 +50,9 @@ def write_response(response_dict: dict):
     # Check if the response is a line chart.
     if "line" in response_dict:
         data = response_dict["line"]
-        df = pd.DataFrame(data)
-        df.set_index("columns", inplace=True)
+        df = pd.DataFrame(data["data"], columns=data["columns"])
         st.line_chart(df)
+
 
     # Check if the response is a table.
     if "table" in response_dict:
