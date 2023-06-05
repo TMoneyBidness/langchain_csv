@@ -14,12 +14,15 @@ def decode_response(response: str) -> dict:
     Returns:
         dict: dictionary with response data
     """
-    try:
-        return json.loads(response)
-    except json.JSONDecodeError:
-        print(f"Failed to decode JSON from response: {response}")
-        raise
-
+    if response:
+        try:
+            return json.loads(response)
+        except json.JSONDecodeError as e:
+            print(f"Failed to decode JSON from response: {response}", file=sys.stderr)
+            raise e
+    else:
+        print(f"Response is empty or None: {response}", file=sys.stderr)
+        # Handle this case appropriately here
 
 
 def write_response(response_dict: dict):
