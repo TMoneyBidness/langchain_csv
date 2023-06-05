@@ -9,7 +9,7 @@ import os
 # environ.Env.read_env()
 # API_KEY = env("apikey")
 
-st.write("API_KEY:", st.secrets["apikey"])
+API_KEY = st.secrets["apikey"]
 
 def create_agent(filename):
     """
