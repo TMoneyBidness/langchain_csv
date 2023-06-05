@@ -22,7 +22,7 @@ def create_agent(filename):
     """
 
     # Create an OpenAI object.
-    llm = OpenAI(openai_api_key=API_KEY)
+    llm = OpenAI(openai_api_key=API_KEY, model_name='gpt-4')
 
     # Read the CSV file into a Pandas DataFrame.
     df = pd.read_csv(filename)
