@@ -71,17 +71,21 @@ objectives = st.text_area("Describe your objectives. For example, 'Provide ratio
 agent_context = st.text_area("Agent context prompt. ie. 'You are skilled in transportation pattern analysis. You look for trends, ratios, and hidden insights in the data.'")
 query = st.text_area("Insert your query")
 
-if st.button("Submit Query", type="primary"):
-    # Create an agent from the CSV file.
-    agent = create_agent(data)
+if data is not None:
+    if st.button("Submit Query", type="primary"):
+        # Create an agent from the CSV file.
+        agent = create_agent(data)
 
-    # Query the agent.
-    response = query_agent(agent=agent, query=query, describe_dataset=describe_dataset, objectives=objectives, agent_context=agent_context)
+        # Query the agent.
+        response = query_agent(agent=agent, query=query, describe_dataset=describe_dataset, objectives=objectives, agent_context=agent_context)
 
-    # Decode the response.
-    decoded_response = decode_response(response)
+        # Decode the response.
+        decoded_response = decode_response(response)
 
-    # Write the response to the Streamlit app.
-    st.write(decoded_response)
+        # Write the response to the Streamlit app.
+        st.write(decoded_response)
+else:
+    st.write("Please upload a CSV file.")
+
 
 
