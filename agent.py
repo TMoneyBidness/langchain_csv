@@ -31,7 +31,6 @@ def create_agent(filename):
     # Create a Pandas DataFrame agent.
     return create_pandas_dataframe_agent(llm, df, verbose=False)
 
-
 def query_agent(agent, agent_context, describe_dataset, objectives, query):
     """
     Query an agent and return the response as a string.
