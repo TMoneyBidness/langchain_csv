@@ -52,7 +52,6 @@ def write_response(response_dict: dict):
         df = pd.DataFrame(data["data"], columns=data["columns"])
         st.table(df)
 
-
 st.title("👨‍💻 Chat with your CSV")
 
 st.write("Please upload your CSV file below.")
@@ -74,7 +73,7 @@ if st.button("Submit Query", type="primary"):
     # Decode the response.
     decoded_response = decode_response(response)
 
-     # Write the response to the Streamlit app.
-     write_response(decoded_response)
+    # Write the response to the Streamlit app.
+    st.write(decoded_response)
 
 
