@@ -60,6 +60,13 @@ def write_response(response_dict: dict):
         df = pd.DataFrame(data["data"], columns=data["columns"])
         st.table(df)
 
+    # Check if the response is a scatter chart.
+    if "scatter" in response_dict:
+        data = response_dict["scatter"]
+        df = pd.DataFrame(data["data"], columns=data["columns"])
+        st.plotly_chart(px.scatter(df, x=data['columns'][0], y=data['columns'][1]))
+
+
 st.title("👨‍💻 Chat with your CSV")
 
 st.write("Please upload your CSV file below.")
