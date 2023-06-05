@@ -89,7 +89,7 @@ if data is not None:
         decoded_response = decode_response(response)
 
         # Write the response to the Streamlit app.
-        st.write(decoded_response)
+        write_response(decoded_response)
 else:
     st.write("Please upload a CSV file.")
 
