@@ -20,7 +20,7 @@ def create_agent(filename):
     llm = OpenAI(openai_api_key=API_KEY)
 
     # Read the CSV file into a Pandas DataFrame.
-    df = pd.read_csv(filename, encoding='ISO-8859-1')
+    df = pd.read_csv(filename, encoding='latin-1')
 
     # Create a Pandas DataFrame agent.
     return create_pandas_dataframe_agent(llm, df, verbose=False)
@@ -40,7 +40,7 @@ def query_agent(agent, agent_context, describe_dataset, objectives, query):
         The response from the agent as a string.
     """
 
-    prompt = f"""
+    prompt = (f"""
         You are DataFrameAI, the most advanced dataframe analysis agent on the planet. You are collaborating with a company to provide skilled, in-depth data analysis on a large table. They are looking to gain competitive business insights from this data in order to gain an edge over their competitors. They are looking to analyze trends, ratios, hidden insights, and more.
 
         Here is the context about the agent:
@@ -82,7 +82,7 @@ def query_agent(agent, agent_context, describe_dataset, objectives, query):
         Below is the query.
 
         Query: {query}
-    """
+    """)
 
     # Run the prompt through the agent.
     response = agent.run(prompt)
